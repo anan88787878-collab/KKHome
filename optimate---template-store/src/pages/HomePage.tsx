@@ -228,6 +228,23 @@ export default function HomePage() {
 
     if (error) throw error;
 
+    // Trigger Google Sheets sync via Vercel Function
+    try {
+      await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          items: cart.map(item => ({ title: item.product.title, qty: item.quantity })),
+          total: totalAmount
+        })
+      });
+    } catch (apiErr) {
+      console.warn("Failed to sync with Google Sheets, but order was saved to DB.");
+    }
+
     toast.success('Đặt hàng thành công!');
     setCart([]);
     setIsCheckoutOpen(false);
