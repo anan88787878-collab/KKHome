@@ -57,7 +57,12 @@ export default function HomePage() {
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (e) {
+        console.error('Invalid user data in localStorage');
+        localStorage.removeItem('user');
+      }
     }
 
     fetchProducts();
