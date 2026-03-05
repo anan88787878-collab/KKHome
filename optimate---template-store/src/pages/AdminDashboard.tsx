@@ -42,13 +42,20 @@ export default function AdminDashboard() {
       navigate('/login');
       return;
     }
-    const parsedUser = JSON.parse(storedUser);
-    setUser(parsedUser);
     
-    if (parsedUser.role === 'admin') {
-      fetchAllData();
-    } else {
-      fetchUserOrders(parsedUser.id);
+    try {
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser);
+      
+      if (parsedUser.role === 'admin') {
+        fetchAllData();
+      } else {
+        fetchUserOrders(parsedUser.id);
+      }
+    } catch (e) {
+      console.error('Invalid user data in localStorage');
+      localStorage.removeItem('user');
+      navigate('/login');
     }
   }, []);
 
