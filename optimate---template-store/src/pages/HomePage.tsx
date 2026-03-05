@@ -53,8 +53,21 @@ export default function HomePage() {
   const [user, setUser] = useState<any>(null);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [supabaseConnected, setSupabaseConnected] = useState<boolean | null>(null);
 
   useEffect(() => {
+    const checkConnection = async () => {
+      try {
+        const { error } = await supabase.from('products').select('count', { count: 'exact', head: true });
+        if (error) throw error;
+        setSupabaseConnected(true);
+      } catch (err) {
+        console.error('Supabase connection failed:', err);
+        setSupabaseConnected(false);
+      }
+    };
+    checkConnection();
+
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       try {
@@ -266,6 +279,13 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-white">
       <Toaster position="top-center" />
+      
+      {/* Supabase Connection Warning */}
+      {supabaseConnected === false && (
+        <div className="bg-red-600 text-white text-center py-2 text-xs font-bold sticky top-0 z-[100] animate-pulse">
+          ⚠️ LỖI KẾT NỐI SUPABASE: Vui lòng kiểm tra Biến môi trường (VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY) trên Vercel Dashboard!
+        </div>
+      )}
       
       {/* Header */}
       <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-100">
