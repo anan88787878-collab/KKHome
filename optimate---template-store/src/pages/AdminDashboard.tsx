@@ -24,6 +24,7 @@ export default function AdminDashboard() {
   const [editingOrder, setEditingOrder] = useState<any>(null);
   const [orderNote, setOrderNote] = useState('');
   const [orderStatus, setOrderStatus] = useState('');
+  const [supabaseConnected, setSupabaseConnected] = useState<boolean | null>(null);
 
   const [newProduct, setNewProduct] = useState({
     title: '',
@@ -37,6 +38,18 @@ export default function AdminDashboard() {
   });
 
   useEffect(() => {
+    const checkConnection = async () => {
+      try {
+        const { error } = await supabase.from('products').select('count', { count: 'exact', head: true });
+        if (error) throw error;
+        setSupabaseConnected(true);
+      } catch (err) {
+        console.error('Supabase connection failed:', err);
+        setSupabaseConnected(false);
+      }
+    };
+    checkConnection();
+
     const storedUser = localStorage.getItem('user');
     if (!storedUser) {
       navigate('/login');
@@ -202,6 +215,13 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-[#F8F9FA] flex font-sans text-[#1A1A1A]">
       <Toaster position="top-center" />
+      
+      {/* Supabase Connection Warning */}
+      {supabaseConnected === false && (
+        <div className="fixed top-0 left-0 right-0 bg-red-600 text-white text-center py-2 text-xs font-bold z-[100] animate-pulse">
+          ⚠️ LỖI KẾT NỐI SUPABASE: Vui lòng kiểm tra Biến môi trường trên Vercel Dashboard!
+        </div>
+      )}
       
       {/* Sidebar */}
       <aside className="w-72 bg-white border-r border-gray-100 hidden md:flex flex-col sticky top-0 h-screen">
