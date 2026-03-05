@@ -7,6 +7,7 @@ export interface Product {
   image: string;
   badge?: 'NEW' | 'BÁN CHẠY';
   features: string[];
+  youtubeUrl?: string;
 }
 
 export const PRODUCTS: Product[] = [
@@ -18,7 +19,8 @@ export const PRODUCTS: Product[] = [
     oldPrice: 210000,
     image: 'https://picsum.photos/seed/payroll/800/600',
     badge: 'NEW',
-    features: ['THIẾT KẾ ĐƠN GIẢN', 'CÓ VIDEO HƯỚNG DẪN CỤ THỂ', 'GOOGLE SHEETS']
+    features: ['THIẾT KẾ ĐƠN GIẢN', 'CÓ VIDEO HƯỚNG DẪN CỤ THỂ', 'GOOGLE SHEETS'],
+    youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
   },
   {
     id: '2',
